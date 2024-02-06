@@ -1,23 +1,26 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using SandPhysics.Physics;
-using SharpDX.Direct3D9;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace SandPhysics
 {
     public class Game1 : Game
     {
-        private Texture2D grainOfSand;
-        private Vector2 grainOfSandPosition;
-        private float grainOfSandSpeed;
+        //private Vector2 grainOfSandPosition;
+        //private float grainOfSandSpeed;
+
+        private List<MovingSprite> grainsOfSand;
+        private MouseSprite grainOfSand;
 
         private Texture2D ground;
 
-        private PhysicsOfSand physics; 
-
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
+
+        private MouseState _currentMouseState;
+        private MouseState _previousMouseState;
 
         public Game1()
         {
@@ -29,10 +32,6 @@ namespace SandPhysics
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            grainOfSandPosition = new Vector2(_graphics.PreferredBackBufferWidth / 2, _graphics.PreferredBackBufferHeight / 2);
-            grainOfSandSpeed = 0.5f;
-
-            physics = new PhysicsOfSand();
 
             base.Initialize();
         }
@@ -41,8 +40,14 @@ namespace SandPhysics
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            _previousMouseState = Mouse.GetState();
+
             // TODO: use this.Content to load your game content here
-            grainOfSand = Content.Load<Texture2D>("sand");
+            Texture2D sandTexture = Content.Load<Texture2D>("sand");
+            grainsOfSand = new List<MovingSprite>();
+
+            grainOfSand = new MouseSprite(sandTexture, Vector2.One);
+
             ground = Content.Load<Texture2D>("ground");
         }
 
@@ -51,16 +56,17 @@ namespace SandPhysics
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+            if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+            {
+                grainsOfSand.Add(new MovingSprite(grainOfSand.Texture, grainOfSand.Position, 0.5f));
+                Debug.WriteLine("Button is pressed ");
+            }
+            grainOfSand.Update();
+            foreach (MovingSprite movingSprite in grainsOfSand)
+            {
+                movingSprite.Update();
+            }
             // TODO: Add your update logic 
-            grainOfSandSpeed = grainOfSandSpeed + (grainOfSandSpeed * 0.3f);
-            if (grainOfSandPosition.Y + grainOfSandSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds > 480)
-            {
-                grainOfSandPosition.Y = 470;
-            }
-            else
-            {
-                grainOfSandPosition.Y = physics.GetYPosition(grainOfSandPosition.Y, grainOfSandSpeed, gameTime);
-            }
             base.Update(gameTime);
         }
 
@@ -69,9 +75,14 @@ namespace SandPhysics
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
-            _spriteBatch.Begin();
+            _spriteBatch.Begin(samplerState: SamplerState.PointClamp) ;
             _spriteBatch.Draw(ground, new Vector2(0, 480), Color.White);
-            _spriteBatch.Draw(grainOfSand, grainOfSandPosition, null, Color.White, 0f, new Vector2(grainOfSand.Width / 2, grainOfSand.Height / 2), Vector2.One, SpriteEffects.None, 0f);
+            foreach(MovingSprite movingSprite in grainsOfSand)
+            {
+                _spriteBatch.Draw(movingSprite.Texture, movingSprite.Rect, Color.White);
+            }
+            _spriteBatch.Draw(grainOfSand.Texture, grainOfSand.Rect, Color.White);
+            //_spriteBatch.Draw(grainOfSand, grainOfSandPosition, null, Color.White, 0f, new Vector2(grainOfSand.Width / 2, grainOfSand.Height / 2), Vector2.One, SpriteEffects.None, 0f);
             _spriteBatch.End();
 
 
