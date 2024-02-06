@@ -9,7 +9,7 @@ namespace SandPhysics
         {
             get
             {
-                return new Rectangle((int)Position.X, (int)Position.Y, 10, 10);
+                return new Rectangle((int)Position.X, (int)Position.Y, Texture.Width, Texture.Height );
             }
         }
         public ScaledSprite(Texture2D texture, Vector2 position) : base(texture, position)

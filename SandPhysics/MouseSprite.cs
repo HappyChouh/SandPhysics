@@ -9,9 +9,9 @@ namespace SandPhysics
     {
         public MouseSprite(Texture2D texture, Vector2 position): base(texture, position) { }
 
-        public override void Update()
+        public override void Update(GameTime gameTime)
         {
-            base.Update();
+            base.Update(gameTime);
 
             Position.X = Mouse.GetState().X;
             Position.Y = Mouse.GetState().Y;

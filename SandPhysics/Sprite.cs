@@ -14,6 +14,6 @@ namespace SandPhysics
             Position = position;
         }
 
-        public virtual void Update() { }
+        public virtual void Update(GameTime gameTime) { }
     }
 }
