@@ -79,7 +79,7 @@ namespace SandPhysics
             {
                 foreach (SandSprite sandSprite1 in grainsOfSand)
                 {
-                    if (sandSprite.Position.Y > sandSprite1.Position.Y && sandSprite1.Rect.Intersects(sandSprite.Rect) && sandSprite.OnSomething == false)
+                    if (sandSprite.Position.Y > sandSprite1.Position.Y && sandSprite1.Rect.Intersects(sandSprite.Rect) && sandSprite.OnSomething == false && sandSprite1.OnSomething == true)
                     {
                         sandSprite.Position.Y = sandSprite1.Position.Y - sandSprite1.Texture.Height;
                         sandSprite.speed = 0.1f;

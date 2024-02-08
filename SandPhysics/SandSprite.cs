@@ -14,7 +14,7 @@ namespace SandPhysics
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            float acceleration = 400f * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            float acceleration = 800f * (float)gameTime.ElapsedGameTime.TotalSeconds;
             speed += acceleration;
             Position.Y += speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
         }
